@@ -1,8 +1,14 @@
 package com.aws.rest.controller;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,18 +28,31 @@ public class AlumnoController {
     private AlumnoService alumnoService;
 
     @GetMapping()
-    public List<Alumno> getAllAlumnos() {
-        return alumnoService.getAllAlumnos();
+    public ResponseEntity<?> getAllAlumnos() {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+        List<Alumno> alumnos = alumnoService.getAllAlumnos();
+        return new ResponseEntity<>(alumnos, responseHeaders, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public Alumno getAlumno(@PathVariable(value = "id") int id) {
-        return alumnoService.getAlumnoById(id);
+    public ResponseEntity<?> getAlumno(@PathVariable(value = "id") int id) {
+        HttpHeaders responHeaders = new HttpHeaders();
+        responHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Optional<?> alumno = alumnoService.getAlumnoById(id);
+        if (alumno.isPresent()) {
+            return new ResponseEntity<>(alumno, responHeaders, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(responHeaders, HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping()
-    public void postAlumno(@RequestBody Alumno alumno) {
+    public ResponseEntity<?> postAlumno(@RequestBody Alumno alumno) {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
         alumnoService.addAlumno(alumno);
+        return new ResponseEntity<>(alumno, responseHeaders, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -42,7 +61,15 @@ public class AlumnoController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAlumno(@PathVariable("id") int id) {
-        alumnoService.deleteAlumno(id);
+    public ResponseEntity<?> deleteAlumno(@PathVariable("id") int id) {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Boolean flag = alumnoService.deleteAlumno(id);
+        if (flag) {
+            return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_FOUND);
+        }
+
     }
 }
