@@ -8,6 +8,7 @@ import com.aws.rest.respository.AlumnoRepository;
 import com.aws.rest.entity.Alumno;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlumnoService {
@@ -18,8 +19,19 @@ public class AlumnoService {
         return alumnoRepository.getAlumnosList();
     }
 
-    public Alumno getAlumnoById(int id) {
-        return alumnoRepository.getAlumnosList().stream().filter(alumno -> alumno.getId() == id).findFirst().get();
+    // public Alumno getAlumnoById(int id) {
+    // return alumnoRepository.getAlumnosList().stream().filter(alumno ->
+    // alumno.getId() == id).findFirst().get();
+    // }
+
+    public Optional<Alumno> getAlumnoById(int id) {
+        List<Alumno> alumnos = alumnoRepository.getAlumnosList();
+        for (Alumno alumno : alumnos) {
+            if (alumno.getId() == id) {
+                return Optional.of(alumno);
+            }
+        }
+        return Optional.empty();
     }
 
     public void addAlumno(Alumno alumno) {
@@ -37,8 +49,19 @@ public class AlumnoService {
         }
     }
 
-    public void deleteAlumno(int id) {
+    // public void deleteAlumno(int id) {
+    // List<Alumno> alumnosList = alumnoRepository.getAlumnosList();
+    // alumnosList.removeIf(alumno -> alumno.getId() == id);
+    // }
+
+    public boolean deleteAlumno(int id) {
         List<Alumno> alumnosList = alumnoRepository.getAlumnosList();
-        alumnosList.removeIf(alumno -> alumno.getId() == id);
+        for (Alumno alumno : alumnosList) {
+            if (alumno.getId() == id) {
+                alumnosList.remove(alumno);
+                return true;
+            }
+        }
+        return false;
     }
 }
