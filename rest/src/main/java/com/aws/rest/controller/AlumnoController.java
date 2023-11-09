@@ -1,6 +1,5 @@
 package com.aws.rest.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,8 +55,15 @@ public class AlumnoController {
     }
 
     @PutMapping("/{id}")
-    public void putAlumno(@RequestBody Alumno alumno, @PathVariable("id") int id) {
-        alumnoService.updateAlumno(alumno, id);
+    public ResponseEntity<?> putAlumno(@RequestBody Alumno alumno, @PathVariable("id") int id) {
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Optional<?> alumnoOptional = alumnoService.updateAlumno(alumno, id);
+        if (alumnoOptional.isPresent()) {
+            return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")

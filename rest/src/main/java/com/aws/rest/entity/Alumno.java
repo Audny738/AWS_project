@@ -1,7 +1,6 @@
 package com.aws.rest.entity;
 
 public class Alumno {
-
     private int id;
     private String nombres;
     private String apellidos;
@@ -22,12 +21,16 @@ public class Alumno {
         return id;
     }
 
-    public String getNombre() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNombres() {
         return nombres;
     }
 
-    public void setNombre(String nombre) {
-        this.nombres = nombre;
+    public void setNombres(String nombres) {
+        this.nombres = nombres;
     }
 
     public String getApellidos() {

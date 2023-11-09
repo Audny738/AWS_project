@@ -22,6 +22,10 @@ public class Profesor {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public void setNumeroEmpleado(int numeroEmpleado) {
         this.numeroEmpleado = numeroEmpleado;
     }

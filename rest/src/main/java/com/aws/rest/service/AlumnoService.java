@@ -14,15 +14,11 @@ import java.util.Optional;
 public class AlumnoService {
     @Autowired
     private AlumnoRepository alumnoRepository;
+    private static int count = 0;
 
     public List<Alumno> getAllAlumnos() {
         return alumnoRepository.getAlumnosList();
     }
-
-    // public Alumno getAlumnoById(int id) {
-    // return alumnoRepository.getAlumnosList().stream().filter(alumno ->
-    // alumno.getId() == id).findFirst().get();
-    // }
 
     public Optional<Alumno> getAlumnoById(int id) {
         List<Alumno> alumnos = alumnoRepository.getAlumnosList();
@@ -36,23 +32,18 @@ public class AlumnoService {
 
     public void addAlumno(Alumno alumno) {
         alumnoRepository.getAlumnosList().add(alumno);
+        count += 1;
+        alumno.setId(count);
     }
 
-    public void updateAlumno(Alumno alumno, int id) {
-        int counter = 0;
-        List<Alumno> alumnosList = alumnoRepository.getAlumnosList();
-        for (Alumno alumno1 : alumnosList) {
-            if (alumno1.getId() == id) {
-                alumnosList.set(counter, alumno);
-            }
-            counter++;
+    public Optional<Alumno> updateAlumno(Alumno alumno, int id) {
+        Optional<Alumno> alumnoFound = getAlumnoById(id);
+        if (alumnoFound.isPresent()) {
+            alumnoFound.get().setNombres(alumno.getNombres());
+            alumnoFound.get().setMatricula(alumno.getMatricula());
         }
+        return alumnoFound;
     }
-
-    // public void deleteAlumno(int id) {
-    // List<Alumno> alumnosList = alumnoRepository.getAlumnosList();
-    // alumnosList.removeIf(alumno -> alumno.getId() == id);
-    // }
 
     public boolean deleteAlumno(int id) {
         List<Alumno> alumnosList = alumnoRepository.getAlumnosList();
