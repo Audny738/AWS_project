@@ -50,8 +50,13 @@ public class AlumnoController {
     public ResponseEntity<?> postAlumno(@RequestBody Alumno alumno) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.APPLICATION_JSON);
-        alumnoService.addAlumno(alumno);
-        return new ResponseEntity<>(alumno, responseHeaders, HttpStatus.CREATED);
+        Optional<?> alumnoFound = alumnoService.addAlumno(alumno);
+        if (alumnoFound.isPresent()) {
+            return new ResponseEntity<>(alumno, responseHeaders, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(responseHeaders, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @PutMapping("/{id}")
@@ -62,7 +67,7 @@ public class AlumnoController {
         if (alumnoOptional.isPresent()) {
             return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(responseHeaders, HttpStatus.BAD_REQUEST);
         }
     }
 

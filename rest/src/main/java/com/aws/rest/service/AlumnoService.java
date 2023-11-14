@@ -14,7 +14,6 @@ import java.util.Optional;
 public class AlumnoService {
     @Autowired
     private AlumnoRepository alumnoRepository;
-    private static int count = 0;
 
     public List<Alumno> getAllAlumnos() {
         return alumnoRepository.getAlumnosList();
@@ -30,19 +29,29 @@ public class AlumnoService {
         return Optional.empty();
     }
 
-    public void addAlumno(Alumno alumno) {
-        alumnoRepository.getAlumnosList().add(alumno);
-        count += 1;
-        alumno.setId(count);
+    public Optional<Alumno> addAlumno(Alumno alumno) {
+        Boolean flag = validateFields(alumno);
+        if (flag) {
+            alumnoRepository.getAlumnosList().add(alumno);
+            return Optional.of(alumno);
+        }
+        return Optional.empty();
     }
 
     public Optional<Alumno> updateAlumno(Alumno alumno, int id) {
-        Optional<Alumno> alumnoFound = getAlumnoById(id);
-        if (alumnoFound.isPresent()) {
-            alumnoFound.get().setNombres(alumno.getNombres());
-            alumnoFound.get().setMatricula(alumno.getMatricula());
+
+        Boolean flag = validateFields(alumno);
+        if (flag) {
+            Optional<Alumno> alumnoFound = getAlumnoById(id);
+            if (alumnoFound.isPresent()) {
+                alumnoFound.get().setNombres(alumno.getNombres());
+                alumnoFound.get().setMatricula(alumno.getMatricula());
+            }
+            return alumnoFound;
         }
-        return alumnoFound;
+        Optional<Alumno> alumnoNotFound = Optional.empty();
+        return alumnoNotFound;
+
     }
 
     public boolean deleteAlumno(int id) {
@@ -54,5 +63,18 @@ public class AlumnoService {
             }
         }
         return false;
+    }
+
+    public Boolean validateFields(Alumno alumno) {
+        if (alumno.getNombres() == "" || alumno.getNombres() == null) {
+            return false;
+        }
+        if (alumno.getApellidos() == "" || alumno.getApellidos() == null) {
+            return false;
+        }
+        if (alumno.getPromedio() < 0) {
+            return false;
+        }
+        return true;
     }
 }
