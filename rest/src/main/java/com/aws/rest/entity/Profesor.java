@@ -6,11 +6,11 @@ public class Profesor {
     private int numeroEmpleado;
     private String nombres;
     private String apellidos;
-    private double horasClase;
+    private int horasClase;
 
     private int counter = 0;
 
-    public Profesor(int numeroEmpleado, String nombres, String apellidos, double horasClase) {
+    public Profesor(int numeroEmpleado, String nombres, String apellidos, int horasClase) {
         this.id = counter + 1;
         this.numeroEmpleado = numeroEmpleado;
         this.nombres = nombres;
@@ -50,11 +50,11 @@ public class Profesor {
         return apellidos;
     }
 
-    public void setHorasClase(double horasClase) {
+    public void setHorasClase(int horasClase) {
         this.horasClase = horasClase;
     }
 
-    public double getHorasClase() {
+    public int getHorasClase() {
         return horasClase;
     }
 
