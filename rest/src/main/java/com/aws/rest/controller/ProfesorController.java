@@ -52,10 +52,14 @@ public class ProfesorController {
 
     @PostMapping()
     public ResponseEntity<?> postProfesor(@RequestBody Profesor profesor) {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
-        profesorService.addProfesor(profesor);
-        return new ResponseEntity<>(profesor, responseHeaders, HttpStatus.CREATED);
+        HttpHeaders respoHeaders = new HttpHeaders();
+        respoHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Optional<?> profesorFound = profesorService.addProfesor(profesor);
+        if (profesorFound.isPresent()) {
+            return new ResponseEntity<>(profesor, respoHeaders, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(respoHeaders, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/{id}")
@@ -66,7 +70,7 @@ public class ProfesorController {
         if (profesorOptional.isPresent()) {
             return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(responseHeaders, HttpStatus.BAD_REQUEST);
         }
 
     }
