@@ -15,11 +15,11 @@ public class ProfesorService {
     private ProfesorRepository profesorRepository;
 
     public List<Profesor> getAllProfesor() {
-        return profesorRepository.getProfesoresList();
+        return profesorRepository.findAll();
     }
 
     public Optional<Profesor> getProfesorById(int id) {
-        List<Profesor> profesores = profesorRepository.getProfesoresList();
+        List<Profesor> profesores = profesorRepository.findAll();
         for (Profesor profesor : profesores) {
             if (profesor.getId() == id) {
                 return Optional.of(profesor);
@@ -31,7 +31,7 @@ public class ProfesorService {
     public Optional<Profesor> addProfesor(Profesor profesor) {
         Boolean flag = validateFields(profesor);
         if (flag) {
-            profesorRepository.getProfesoresList().add(profesor);
+            profesorRepository.save(profesor);
             return Optional.of(profesor);
         }
         return Optional.empty();
@@ -51,15 +51,13 @@ public class ProfesorService {
         return profesorNotFound;
     }
 
-    public Boolean deleteProfesor(int id) {
-        List<Profesor> profesoresList = profesorRepository.getProfesoresList();
-        for (Profesor profesor : profesoresList) {
-            if (profesor.getId() == id) {
-                profesoresList.remove(profesor);
-                return true;
-            }
+    public void deleteProfesor(int id) {
+        Optional<Profesor> profesorExist = profesorRepository.findById(id);
+        if (profesorExist.isEmpty()) {
+
         }
-        return false;
+        profesorRepository.deleteById(id);
+
     }
 
     public Boolean validateFields(Profesor profesor) {
