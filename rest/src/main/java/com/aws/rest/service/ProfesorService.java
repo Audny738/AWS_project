@@ -44,6 +44,7 @@ public class ProfesorService {
             if (profesorFound.isPresent()) {
                 profesorFound.get().setNombres(profesor.getNombres());
                 profesorFound.get().setHorasClase(profesor.getHorasClase());
+                profesorRepository.save(profesorFound.get());
             }
             return profesorFound;
         }
@@ -51,12 +52,12 @@ public class ProfesorService {
         return profesorNotFound;
     }
 
-    public void deleteProfesor(int id) {
+    public Optional<Profesor> deleteProfesor(int id) {
         Optional<Profesor> profesorExist = profesorRepository.findById(id);
-        if (profesorExist.isEmpty()) {
-
+        if (profesorExist.isPresent()) {
+            profesorRepository.deleteById(id);
         }
-        profesorRepository.deleteById(id);
+        return profesorExist;
 
     }
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.aws.rest.respository.AlumnoRepository;
 import com.aws.rest.entity.Alumno;
+import com.aws.rest.entity.Profesor;
 import com.aws.rest.error.AlumnoException;
 
 import java.util.List;
@@ -41,35 +42,36 @@ public class AlumnoService {
         return Optional.empty();
     }
 
-    public Alumno updateAlumno(Alumno alumno, int id) throws Exception {
+    public Optional<Alumno> updateAlumno(Alumno alumno, int id) {
 
         Boolean flag = validateFields(alumno);
-        // if (flag) {
-        // Optional<Alumno> alumnoFound = getAlumnoById(id);
-        // if (alumnoFound.isPresent()) {
-        // alumnoFound.get().setNombres(alumno.getNombres());
-        // alumnoFound.get().setMatricula(alumno.getMatricula());
-        // }
-        // return alumnoFound;
-        // }
-        // Optional<Alumno> alumnoNotFound = Optional.empty();
-        // return alumnoNotFound;
         if (flag) {
-            Optional<Alumno> alumnoFound = getAlumnoById(id);
-            if (alumnoFound.isPresent()) {
-                return alumnoRepository.save(alumno);
+            Optional<Alumno> alumnoFound;
+            try {
+                alumnoFound = getAlumnoById(id);
+                if (alumnoFound.isPresent()) {
+                    alumnoFound.get().setNombres(alumno.getNombres());
+                    alumnoFound.get().setMatricula(alumno.getMatricula());
+                    alumnoRepository.save(alumnoFound.get());
+                }
+                return alumnoFound;
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
+            
         }
-        throw new AlumnoException("Este alumno no existe");
+        Optional<Alumno> alumnoNotFound = Optional.empty();
+        return alumnoNotFound;
 
     }
 
-    public void deleteAlumno(int id) throws Exception {
+    public Optional<Alumno> deleteAlumno(int id) throws Exception {
         Optional<Alumno> alumnoExist = alumnoRepository.findById(id);
-        if (alumnoExist.isEmpty()) {
-            throw new AlumnoException("No se encontro alumno con ese id para ser eliminado");
+        if (alumnoExist.isPresent()) {
+            alumnoRepository.deleteById(id);
         }
-        alumnoRepository.deleteById(id);
+        return alumnoExist;
     }
 
     public Boolean validateFields(Alumno alumno) {

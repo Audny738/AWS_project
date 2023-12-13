@@ -79,11 +79,11 @@ public class ProfesorController {
     public ResponseEntity<?> deleteProfesor(@PathVariable(value = "id") int id) {
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.setContentType(MediaType.APPLICATION_JSON);
-        profesorService.deleteProfesor(id);
-        // if (flag) {
-        return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
-        // } else {
-        // return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_FOUND);
-        // }
+        Optional<?> profesorOptional = profesorService.deleteProfesor(id);
+        if (profesorOptional.isPresent()) {
+            return new ResponseEntity<>(responseHeaders, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(responseHeaders, HttpStatus.NOT_FOUND);
+        }
     }
 }
